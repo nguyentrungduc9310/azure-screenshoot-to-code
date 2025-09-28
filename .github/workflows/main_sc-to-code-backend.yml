@@ -19,17 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js for frontend
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Build frontend
-        run: |
-          cd frontend
-          yarn install
-          yarn build
-
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
@@ -39,9 +28,9 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-
-      - name: Install backend dependencies
-        run: pip install -r backend/requirements.txt
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -69,9 +58,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B1F1CF9DE8694237A89D0E4789F2D1AD }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F185041EE77C44DBA13E4736C97A79C8 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A583ECFEB4B0410AA6DA38AF3A0013BA }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B960EE07FC214263B0938B2585298602 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BEC840D9E59C4E4BA27BE0BE9B27D13E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_181CD046B79C4A75A70C1431E1B0E6E2 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -79,4 +68,4 @@ jobs:
         with:
           app-name: 'SC-TO-CODE-BACKEND'
           slot-name: 'Production'
-          startup-command: 'bash startup.sh'
+          
