@@ -45,11 +45,15 @@ jobs:
         run: |
           mkdir -p deployment-test
           cp -r backend/* deployment-test/
-          cp -r frontend/dist deployment-test/frontend/dist/
+          mkdir -p deployment-test/frontend
+          cp -r frontend/dist deployment-test/frontend/
           cp startup.sh deployment-test/
           cp startup.py deployment-test/
+          cp web.config deployment-test/ || echo "web.config not found, skipping"
           echo "✅ Deployment package created!"
           ls -la deployment-test/
+          echo "Frontend structure:"
+          ls -la deployment-test/frontend/
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

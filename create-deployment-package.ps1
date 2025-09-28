@@ -37,8 +37,13 @@ robocopy backend "$deployPath\backend" /E /NFL /NDL /NJH /NJS
 
 # Copy built frontend
 Write-Host "📂 Copying frontend build..." -ForegroundColor Blue
-New-Item -ItemType Directory -Path "$deployPath\frontend" -Force | Out-Null
-robocopy "frontend\dist" "$deployPath\frontend\dist" /E /NFL /NDL /NJH /NJS
+if (Test-Path "frontend\dist") {
+    New-Item -ItemType Directory -Path "$deployPath\frontend" -Force | Out-Null
+    robocopy "frontend\dist" "$deployPath\frontend\dist" /E /NFL /NDL /NJH /NJS
+    Write-Host "✅ Frontend build copied successfully!" -ForegroundColor Green
+} else {
+    Write-Host "⚠️ Frontend dist folder not found. Please run 'cd frontend && yarn build' first." -ForegroundColor Yellow
+}
 
 # Copy deployment files
 Write-Host "📂 Copying deployment files..." -ForegroundColor Blue

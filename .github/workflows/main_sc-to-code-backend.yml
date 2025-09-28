@@ -45,13 +45,22 @@ jobs:
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
+      - name: Create deployment package
+        run: |
+          mkdir -p deployment-package
+          cp -r backend/* deployment-package/
+          mkdir -p deployment-package/frontend
+          cp -r frontend/dist deployment-package/frontend/
+          cp startup.sh deployment-package/
+          cp startup.py deployment-package/
+          cp web.config deployment-package/ || echo "web.config not found, skipping"
+          echo "✅ Deployment package created!"
+
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            .
-            !venv/
+          path: deployment-package/
 
   deploy:
     runs-on: ubuntu-latest
