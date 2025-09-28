@@ -1,0 +1,37 @@
+name: Test GitHub Actions
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test basic functionality
+        run: |
+          echo "✅ GitHub Actions is working!"
+          echo "Current directory: $(pwd)"
+          echo "Files in repo:"
+          ls -la
+
+      - name: Test Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Test Python setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify installations
+        run: |
+          echo "Node version: $(node --version)"
+          echo "Python version: $(python --version)"
+          echo "✅ All tools available!"

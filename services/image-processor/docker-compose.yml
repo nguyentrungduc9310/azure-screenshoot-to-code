@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  image-processor:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - SERVICE_NAME=image-processor
+      - API_HOST=0.0.0.0
+      - API_PORT=8001
+      # Azure configuration (from environment or .env file)
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_KEY_VAULT_NAME=${AZURE_KEY_VAULT_NAME}
+      - APPLICATIONINSIGHTS_CONNECTION_STRING=${APPLICATIONINSIGHTS_CONNECTION_STRING}
+    volumes:
+      - ./app:/app/app
+      - ./shared:/app/shared
+      - ./tests:/app/tests
+      - /tmp/image_processing:/tmp/image_processing
+    depends_on:
+      - redis
+    networks:
+      - image-processor-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching (optional for development)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - image-processor-network
+    command: redis-server --appendonly yes
+
+  # Development test runner
+  image-processor-test:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=testing
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./app:/app/app
+      - ./shared:/app/shared
+      - ./tests:/app/tests
+    networks:
+      - image-processor-network
+    command: pytest tests/ -v --cov=app --cov-report=term-missing
+    depends_on:
+      - redis
+    profiles:
+      - testing
+
+volumes:
+  redis_data:
+
+networks:
+  image-processor-network:
+    driver: bridge

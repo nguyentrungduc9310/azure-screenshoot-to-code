@@ -1,0 +1,817 @@
+openapi: 3.0.3
+info:
+  title: Image Processor API
+  description: |
+    Image processing microservice for optimizing images for AI providers (Claude, OpenAI, Gemini).
+    
+    Provides comprehensive image validation, format conversion, optimization, content analysis, and thumbnail generation.
+  version: 1.0.0
+  contact:
+    name: Screenshot-to-Code Team
+    url: https://github.com/your-org/screenshot-to-code
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8001
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Basic health check
+      description: Returns basic service health status
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                service: "image-processor"
+                version: "1.0"
+                timestamp: "2024-01-22T10:30:00Z"
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      description: Kubernetes readiness probe endpoint
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+
+  /health/live:
+    get:
+      summary: Liveness probe
+      description: Kubernetes liveness probe endpoint
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is alive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LivenessResponse'
+
+  /health/metrics:
+    get:
+      summary: Detailed metrics
+      description: Get detailed service metrics (requires authentication)
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /health/capabilities:
+    get:
+      summary: Service capabilities
+      description: Get service capabilities and supported features
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service capabilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapabilitiesResponse'
+
+  /api/v1/process:
+    post:
+      summary: Process image
+      description: Process images according to AI provider requirements
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessImageRequest'
+            example:
+              image: "data:image/png;base64,iVBORw0KGgo..."
+              provider: "claude"
+              options:
+                format: "JPEG"
+                quality: 90
+      responses:
+        '200':
+          description: Image processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessImageResponse'
+          headers:
+            X-Image-Process-Time:
+              description: Processing time in milliseconds
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+
+  /api/v1/validate:
+    post:
+      summary: Validate image
+      description: Validate images against provider requirements without processing
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateImageRequest'
+            example:
+              image: "data:image/png;base64,iVBORw0KGgo..."
+              provider: "claude"
+      responses:
+        '200':
+          description: Image validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateImageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/analyze:
+    post:
+      summary: Analyze image
+      description: Analyze image content and characteristics
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzeImageRequest'
+            example:
+              image: "data:image/png;base64,iVBORw0KGgo..."
+      responses:
+        '200':
+          description: Image analysis result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzeImageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/thumbnail:
+    post:
+      summary: Create thumbnail
+      description: Create optimized thumbnails
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateThumbnailRequest'
+            example:
+              image: "data:image/png;base64,iVBORw0KGgo..."
+              width: 150
+              height: 150
+              options:
+                maintain_aspect_ratio: true
+                quality: 80
+      responses:
+        '200':
+          description: Thumbnail created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateThumbnailResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/providers:
+    get:
+      summary: Get supported providers
+      description: Get list of supported AI providers and their requirements
+      tags:
+        - Providers
+      responses:
+        '200':
+          description: List of supported providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvidersResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/stats:
+    get:
+      summary: Get processing statistics
+      description: Get processing statistics (admin only)
+      tags:
+        - Admin
+      security:
+        - BearerAuth: ['admin']
+      responses:
+        '200':
+          description: Processing statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Azure AD Bearer token
+
+  schemas:
+    # Request Schemas
+    ProcessImageRequest:
+      type: object
+      required:
+        - image
+        - provider
+      properties:
+        image:
+          type: string
+          description: Base64 data URL of the image
+          pattern: '^data:image\/(jpeg|jpg|png|gif|webp);base64,[A-Za-z0-9+/]+=*$'
+          example: "data:image/png;base64,iVBORw0KGgo..."
+        provider:
+          type: string
+          enum: [claude, openai, gemini]
+          description: AI provider to optimize for
+        options:
+          $ref: '#/components/schemas/ProcessingOptions'
+
+    ProcessingOptions:
+      type: object
+      properties:
+        format:
+          type: string
+          enum: [JPEG, PNG, WEBP]
+          description: Target image format
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: JPEG quality (1-100)
+        max_dimension:
+          type: integer
+          minimum: 10
+          maximum: 8000
+          description: Maximum width/height in pixels
+        preserve_transparency:
+          type: boolean
+          description: Keep transparency for formats that support it
+        background_color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          description: Background color for transparency removal (hex)
+          example: "#FFFFFF"
+
+    ValidateImageRequest:
+      type: object
+      required:
+        - image
+        - provider
+      properties:
+        image:
+          type: string
+          description: Base64 data URL of the image
+          pattern: '^data:image\/(jpeg|jpg|png|gif|webp);base64,[A-Za-z0-9+/]+=*$'
+        provider:
+          type: string
+          enum: [claude, openai, gemini]
+
+    AnalyzeImageRequest:
+      type: object
+      required:
+        - image
+      properties:
+        image:
+          type: string
+          description: Base64 data URL of the image
+          pattern: '^data:image\/(jpeg|jpg|png|gif|webp);base64,[A-Za-z0-9+/]+=*$'
+
+    CreateThumbnailRequest:
+      type: object
+      required:
+        - image
+        - width
+        - height
+      properties:
+        image:
+          type: string
+          description: Base64 data URL of the image
+          pattern: '^data:image\/(jpeg|jpg|png|gif|webp);base64,[A-Za-z0-9+/]+=*$'
+        width:
+          type: integer
+          minimum: 10
+          maximum: 500
+          description: Target width in pixels
+        height:
+          type: integer
+          minimum: 10
+          maximum: 500
+          description: Target height in pixels
+        options:
+          $ref: '#/components/schemas/ThumbnailOptions'
+
+    ThumbnailOptions:
+      type: object
+      properties:
+        maintain_aspect_ratio:
+          type: boolean
+          default: true
+          description: Preserve aspect ratio
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 80
+          description: JPEG quality
+        background_color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          default: "#FFFFFF"
+          description: Background color for transparent images
+
+    # Response Schemas
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "healthy"
+        service:
+          type: string
+          example: "image-processor"
+        version:
+          type: string
+          example: "1.0"
+        timestamp:
+          type: string
+          format: date-time
+
+    ReadinessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "ready"
+        checks:
+          type: object
+          additionalProperties:
+            type: string
+
+    LivenessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "alive"
+
+    MetricsResponse:
+      type: object
+      properties:
+        service:
+          type: object
+          properties:
+            name:
+              type: string
+            version:
+              type: string
+            uptime_seconds:
+              type: integer
+        system:
+          type: object
+          properties:
+            cpu_usage_percent:
+              type: number
+            memory_usage_mb:
+              type: number
+            available_memory_mb:
+              type: number
+        application:
+          type: object
+          properties:
+            total_requests:
+              type: integer
+            successful_requests:
+              type: integer
+            error_rate:
+              type: number
+        image_processing:
+          type: object
+          properties:
+            total_processed:
+              type: integer
+            average_processing_time_ms:
+              type: number
+            compression_ratio_avg:
+              type: number
+
+    CapabilitiesResponse:
+      type: object
+      properties:
+        supported_providers:
+          type: array
+          items:
+            type: string
+        features:
+          type: array
+          items:
+            type: string
+        read_formats:
+          type: array
+          items:
+            type: string
+        write_formats:
+          type: array
+          items:
+            type: string
+
+    ProcessImageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        processed_image:
+          type: string
+          description: Base64 data URL of processed image
+        original_format:
+          type: string
+        processed_format:
+          type: string
+        original_size:
+          type: integer
+          description: Original file size in bytes
+        processed_size:
+          type: integer
+          description: Processed file size in bytes
+        dimensions:
+          type: array
+          items:
+            type: integer
+          minItems: 2
+          maxItems: 2
+          description: "[width, height]"
+        processing_time_ms:
+          type: number
+        compression_ratio:
+          type: number
+        correlation_id:
+          type: string
+        metadata:
+          type: object
+          properties:
+            provider:
+              type: string
+            quality_used:
+              type: integer
+            resized:
+              type: boolean
+            has_transparency:
+              type: boolean
+            image_hash:
+              type: string
+
+    ValidateImageResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        provider:
+          type: string
+        error_message:
+          type: string
+          nullable: true
+        file_size:
+          type: integer
+        file_size_mb:
+          type: number
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: integer
+            height:
+              type: integer
+            aspect_ratio:
+              type: number
+        format:
+          type: string
+        color_mode:
+          type: string
+        has_transparency:
+          type: boolean
+        requirements_met:
+          type: object
+          properties:
+            size_limit:
+              type: boolean
+            dimension_limit:
+              type: boolean
+            format_supported:
+              type: boolean
+        limits:
+          type: object
+          properties:
+            max_size_mb:
+              type: number
+            max_dimension:
+              type: integer
+            supported_formats:
+              type: array
+              items:
+                type: string
+        correlation_id:
+          type: string
+
+    AnalyzeImageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        analysis:
+          type: object
+          properties:
+            dimensions:
+              type: object
+              properties:
+                width:
+                  type: integer
+                height:
+                  type: integer
+                aspect_ratio:
+                  type: number
+            format:
+              type: string
+            mode:
+              type: string
+            size_bytes:
+              type: integer
+            size_mb:
+              type: number
+            has_transparency:
+              type: boolean
+            has_animation:
+              type: boolean
+            complexity_score:
+              type: number
+              description: "Complexity score (0-10)"
+            dominant_colors:
+              type: integer
+            is_grayscale:
+              type: boolean
+            has_exif:
+              type: boolean
+            exif_orientation:
+              type: integer
+            image_hash:
+              type: string
+            estimated_compression_ratio:
+              type: number
+            analysis_time_ms:
+              type: number
+        recommendations:
+          type: object
+          properties:
+            best_provider:
+              type: string
+            suggested_format:
+              type: string
+            estimated_quality:
+              type: integer
+            processing_notes:
+              type: string
+        correlation_id:
+          type: string
+
+    CreateThumbnailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        thumbnail:
+          type: string
+          description: Base64 data URL of thumbnail
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: integer
+            height:
+              type: integer
+        original_dimensions:
+          type: object
+          properties:
+            width:
+              type: integer
+            height:
+              type: integer
+        file_size:
+          type: integer
+        compression_ratio:
+          type: number
+        processing_time_ms:
+          type: number
+        correlation_id:
+          type: string
+
+    ProvidersResponse:
+      type: object
+      properties:
+        supported_providers:
+          type: array
+          items:
+            type: string
+        provider_requirements:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              max_size:
+                type: integer
+              max_size_mb:
+                type: number
+              max_dimension:
+                type: integer
+              supported_formats:
+                type: array
+                items:
+                  type: string
+              preferred_format:
+                type: string
+              notes:
+                type: string
+
+    StatsResponse:
+      type: object
+      properties:
+        total_processed:
+          type: integer
+        total_size_processed_mb:
+          type: number
+        average_processing_time_ms:
+          type: number
+        average_compression_ratio:
+          type: number
+        provider_usage:
+          type: object
+          additionalProperties:
+            type: integer
+        format_distribution:
+          type: object
+          additionalProperties:
+            type: integer
+        error_rate:
+          type: number
+        performance_metrics:
+          type: object
+          properties:
+            p50_processing_time_ms:
+              type: number
+            p95_processing_time_ms:
+              type: number
+            p99_processing_time_ms:
+              type: number
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Additional error details
+        correlation_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "authentication_required"
+            message: "Authentication token missing or invalid"
+            correlation_id: "req-123e4567-e89b-12d3-a456-426614174000"
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "permission_denied"
+            message: "Insufficient permissions to access this resource"
+            correlation_id: "req-123e4567-e89b-12d3-a456-426614174000"
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "validation_error"
+            message: "Image exceeds maximum size limit for claude provider"
+            details:
+              max_size_mb: 5
+              actual_size_mb: 8.5
+              provider: "claude"
+            correlation_id: "req-123e4567-e89b-12d3-a456-426614174000"
+
+    PayloadTooLarge:
+      description: Request payload too large
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "payload_too_large"
+            message: "Request payload exceeds maximum size limit of 50MB"
+            correlation_id: "req-123e4567-e89b-12d3-a456-426614174000"
+
+tags:
+  - name: Health
+    description: Health check and monitoring endpoints
+  - name: Image Processing
+    description: Core image processing operations
+  - name: Providers
+    description: AI provider information and requirements
+  - name: Admin
+    description: Administrative endpoints (admin access required)

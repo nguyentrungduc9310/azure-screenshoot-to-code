@@ -1,0 +1,55 @@
+{
+  "environment": "staging",
+  "tenant_id": "${AZURE_TENANT_ID}",
+  "application_id": "${AZURE_APPLICATION_ID_STAGING}",
+  "client_secret": "${AZURE_CLIENT_SECRET_STAGING}",
+  "webhook_url": "https://staging-api-gateway.your-domain.com/api/v1/copilot-studio/webhook",
+  "webhook_secret": "${WEBHOOK_SECRET_STAGING}",
+  
+  "agent_name": "Screenshot to Code Assistant (Test)",
+  "agent_description": "Staging version of AI-powered assistant that converts UI screenshots into clean, production-ready code",
+  "supported_languages": ["en", "vi", "fr", "de", "ja", "zh"],
+  
+  "features": {
+    "debug_mode": false,
+    "verbose_logging": false,
+    "test_mode": false,
+    "mock_responses": false
+  },
+  
+  "limitations": {
+    "max_file_size_mb": 20,
+    "max_requests_per_minute": 60,
+    "supported_formats": ["png", "jpg", "jpeg", "gif", "webp"],
+    "frameworks": ["react", "html", "vue", "angular", "svelte"]
+  },
+  
+  "monitoring": {
+    "enable_telemetry": true,
+    "log_level": "INFO",
+    "correlation_tracking": true,
+    "performance_monitoring": true
+  },
+  
+  "security": {
+    "require_authentication": true,
+    "enable_rate_limiting": true,
+    "cors_origins": ["https://staging.your-domain.com"],
+    "trusted_domains": ["staging.your-domain.com", "test.your-domain.com"]
+  },
+  
+  "copilot_studio": {
+    "environment_name": "Staging",
+    "solution_prefix": "stg_stc",
+    "publisher_prefix": "stg",
+    "enable_testing_features": true,
+    "conversation_timeout_minutes": 30
+  },
+  
+  "testing": {
+    "automated_testing": true,
+    "load_testing": true,
+    "security_scanning": true,
+    "performance_benchmarks": true
+  }
+}

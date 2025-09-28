@@ -1,0 +1,37 @@
+# Core FastAPI and ASGI server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+python-multipart==0.0.6
+
+# Image processing
+Pillow==10.1.0
+ImageHash==4.3.1
+
+# HTTP client for external requests
+httpx==0.25.2
+
+# Security and authentication
+python-jose[cryptography]==3.3.0
+azure-identity==1.15.0
+azure-keyvault-secrets==4.7.0
+
+# Monitoring and observability
+opencensus-ext-azure==1.1.11
+opencensus-ext-fastapi==0.1.1
+opencensus==0.11.4
+
+# Data validation and serialization
+python-dateutil==2.8.2
+
+# System monitoring
+psutil==5.9.6
+
+# Development dependencies (for testing)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+httpx==0.25.2
+
+# Optional: Redis for caching (will be added later)
+# redis==5.0.1

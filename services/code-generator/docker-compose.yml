@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  code-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - API_HOST=0.0.0.0
+      - API_PORT=8002
+      - ENABLE_AUTHENTICATION=false
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+      
+      # AI Provider Configuration
+      - ENABLED_PROVIDERS=claude,openai,gemini
+      - DEFAULT_PROVIDER=claude
+      
+      # OpenAI Configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=gpt-4o-2024-11-20
+      - OPENAI_MAX_TOKENS=4096
+      - OPENAI_TEMPERATURE=0.0
+      
+      # Anthropic Configuration  
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=claude-3-5-sonnet-20241022
+      - ANTHROPIC_MAX_TOKENS=4096
+      - ANTHROPIC_TEMPERATURE=0.0
+      
+      # Google Gemini Configuration
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=gemini-2.0-flash-exp
+      - GEMINI_MAX_TOKENS=4096
+      - GEMINI_TEMPERATURE=0.0
+      
+      # Code Generation Configuration
+      - SUPPORTED_STACKS=html_tailwind,html_css,react_tailwind,vue_tailwind,bootstrap,ionic_tailwind,svg
+      - DEFAULT_STACK=html_tailwind
+      - MAX_VARIANTS=2
+      - ENABLE_CACHING=true
+      - CACHE_TTL_SECONDS=3600
+      
+      # Performance Configuration
+      - REQUEST_TIMEOUT_SECONDS=120
+      - MAX_CONCURRENT_REQUESTS=10
+      - RETRY_ATTEMPTS=3
+      - RETRY_DELAY_SECONDS=1.0
+      
+      # Image Processing
+      - MAX_IMAGE_SIZE_MB=20
+      - SUPPORTED_IMAGE_FORMATS=PNG,JPEG,JPG,WEBP,GIF
+      
+      # Development Configuration
+      - MOCK_AI_RESPONSE=false
+      - ENABLE_DEBUG_MODE=true
+      - ENABLE_DETAILED_LOGGING=true
+      
+    volumes:
+      - ./app:/app/app:ro
+      - ./shared:/app/shared:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  default:
+    name: screenshot-to-code-network
+    external: true

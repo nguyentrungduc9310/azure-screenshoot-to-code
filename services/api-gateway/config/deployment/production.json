@@ -1,0 +1,81 @@
+{
+  "environment": "production",
+  "tenant_id": "${AZURE_TENANT_ID}",
+  "application_id": "${AZURE_APPLICATION_ID_PROD}",
+  "client_secret": "${AZURE_CLIENT_SECRET_PROD}",
+  "webhook_url": "https://api-gateway.your-domain.com/api/v1/copilot-studio/webhook",
+  "webhook_secret": "${WEBHOOK_SECRET_PROD}",
+  
+  "agent_name": "Screenshot to Code Assistant",
+  "agent_description": "AI-powered assistant that converts UI screenshots into clean, production-ready code. Supports React, HTML/CSS, Vue.js, Angular, and Svelte frameworks with responsive design and accessibility features.",
+  "supported_languages": ["en", "vi", "fr", "de", "ja", "zh", "es", "pt", "it", "ru", "ko"],
+  
+  "features": {
+    "debug_mode": false,
+    "verbose_logging": false,
+    "test_mode": false,
+    "mock_responses": false
+  },
+  
+  "limitations": {
+    "max_file_size_mb": 20,
+    "max_requests_per_minute": 100,
+    "supported_formats": ["png", "jpg", "jpeg", "gif", "webp"],
+    "frameworks": ["react", "html", "vue", "angular", "svelte"]
+  },
+  
+  "monitoring": {
+    "enable_telemetry": true,
+    "log_level": "WARN",
+    "correlation_tracking": true,
+    "performance_monitoring": true,
+    "error_alerting": true,
+    "uptime_monitoring": true
+  },
+  
+  "security": {
+    "require_authentication": true,
+    "enable_rate_limiting": true,
+    "cors_origins": ["https://your-domain.com", "https://copilotstudio.microsoft.com"],
+    "trusted_domains": ["your-domain.com", "copilotstudio.microsoft.com"],
+    "security_headers": true,
+    "input_sanitization": true,
+    "output_filtering": true
+  },
+  
+  "copilot_studio": {
+    "environment_name": "Production",
+    "solution_prefix": "prod_stc",
+    "publisher_prefix": "prod",
+    "enable_testing_features": false,
+    "conversation_timeout_minutes": 60,
+    "enable_analytics": true,
+    "enable_feedback_collection": true
+  },
+  
+  "performance": {
+    "response_time_target_ms": 500,
+    "code_generation_timeout_s": 30,
+    "webhook_timeout_s": 10,
+    "concurrent_users": 1000,
+    "cache_enabled": true,
+    "cdn_enabled": true
+  },
+  
+  "compliance": {
+    "gdpr_compliant": true,
+    "data_retention_days": 30,
+    "pii_handling": "anonymized",
+    "audit_logging": true,
+    "privacy_policy_url": "https://your-domain.com/privacy",
+    "terms_of_service_url": "https://your-domain.com/terms"
+  },
+  
+  "backup_recovery": {
+    "automated_backups": true,
+    "backup_retention_days": 90,
+    "disaster_recovery_enabled": true,
+    "rto_minutes": 15,
+    "rpo_minutes": 5
+  }
+}

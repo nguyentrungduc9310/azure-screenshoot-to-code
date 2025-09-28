@@ -1,0 +1,43 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway for Screenshot to Code application",
+  "scripts": {
+    "dev": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "start": "uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "test": "python scripts/run_tests.py",
+    "test:verbose": "python scripts/run_tests.py --verbose",
+    "test:coverage": "python scripts/run_tests.py --verbose",
+    "test:quick": "python scripts/run_tests.py --skip-lint --skip-types --skip-security",
+    "test:unit": "pytest tests/ -v",
+    "test:watch": "ptw tests/ -- -v",
+    "lint": "flake8 app/ tests/ --max-line-length=100",
+    "lint:fix": "black app/ tests/ && isort app/ tests/",
+    "typecheck": "mypy app/ --ignore-missing-imports",
+    "security": "safety check && bandit -r app/",
+    "docs:generate": "python scripts/api_docs_generator.py",
+    "docs:serve": "cd docs && python -m http.server 8080",
+    "build": "echo 'Python project - no build step required'",
+    "docker:build": "docker build -t api-gateway .",
+    "docker:run": "docker run -p 8000:8000 --env-file .env api-gateway",
+    "postman:test": "newman run docs/postman-collection.json -e docs/postman-environment.json",
+    "clean": "find . -type d -name __pycache__ -delete && find . -name '*.pyc' -delete",
+    "install": "pip install -r requirements.txt"
+  },
+  "keywords": [
+    "api-gateway",
+    "fastapi",
+    "microservices",
+    "screenshot-to-code",
+    "ai",
+    "code-generation"
+  ],
+  "author": "Screenshot to Code Team",
+  "license": "MIT",
+  "engines": {
+    "python": ">=3.11"
+  },
+  "devDependencies": {
+    "newman": "^5.3.2"
+  }
+}

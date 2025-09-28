@@ -1,0 +1,48 @@
+{
+  "environment": "development",
+  "tenant_id": "${AZURE_TENANT_ID}",
+  "application_id": "${AZURE_APPLICATION_ID}",
+  "client_secret": "${AZURE_CLIENT_SECRET}",
+  "webhook_url": "https://dev-api-gateway.your-domain.com/api/v1/copilot-studio/webhook",
+  "webhook_secret": "${WEBHOOK_SECRET_DEV}",
+  
+  "agent_name": "Screenshot to Code Assistant (Dev)",
+  "agent_description": "Development version of AI-powered assistant that converts UI screenshots into clean, production-ready code",
+  "supported_languages": ["en", "vi"],
+  
+  "features": {
+    "debug_mode": true,
+    "verbose_logging": true,
+    "test_mode": true,
+    "mock_responses": false
+  },
+  
+  "limitations": {
+    "max_file_size_mb": 10,
+    "max_requests_per_minute": 30,
+    "supported_formats": ["png", "jpg", "jpeg", "gif"],
+    "frameworks": ["react", "html", "vue"]
+  },
+  
+  "monitoring": {
+    "enable_telemetry": true,
+    "log_level": "DEBUG",
+    "correlation_tracking": true,
+    "performance_monitoring": true
+  },
+  
+  "security": {
+    "require_authentication": false,
+    "enable_rate_limiting": true,
+    "cors_origins": ["http://localhost:3000", "http://localhost:5173"],
+    "trusted_domains": ["localhost", "dev.your-domain.com"]
+  },
+  
+  "copilot_studio": {
+    "environment_name": "Development",
+    "solution_prefix": "dev_stc",
+    "publisher_prefix": "dev",
+    "enable_testing_features": true,
+    "conversation_timeout_minutes": 15
+  }
+}

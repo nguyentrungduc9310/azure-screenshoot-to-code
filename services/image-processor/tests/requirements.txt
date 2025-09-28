@@ -1,0 +1,80 @@
+# Testing requirements for Image Processor service
+
+# Core testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-timeout>=2.1.0
+pytest-mock>=3.11.0
+pytest-xdist>=3.3.0
+
+# HTTP testing
+httpx>=0.24.0
+requests>=2.31.0
+
+# Coverage reporting
+pytest-cov>=4.1.0
+coverage>=7.2.0
+
+# HTML test reports
+pytest-html>=3.2.0
+
+# Performance testing
+pytest-benchmark>=4.0.0
+
+# Security testing
+pytest-security>=2.0.0
+
+# Parallel test execution
+pytest-parallel>=0.1.1
+
+# Test fixtures and utilities
+factory-boy>=3.3.0
+freezegun>=1.2.0
+
+# Image processing for test data
+Pillow>=10.0.0
+
+# Mock and test data
+responses>=0.23.0
+betamax>=0.8.1
+
+# Database testing (if needed)
+pytest-postgresql>=5.0.0
+pytest-redis>=3.0.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# Azure testing utilities
+azure-storage-blob>=12.17.0
+azure-identity>=1.13.0
+
+# JSON schema validation
+jsonschema>=4.18.0
+
+# Date/time utilities for testing
+python-dateutil>=2.8.0
+
+# Logging utilities
+structlog>=23.1.0
+
+# Memory profiling
+memory-profiler>=0.60.0
+psutil>=5.9.0
+
+# Load testing
+locust>=2.16.0
+
+# API documentation testing
+openapi3>=1.8.0
+swagger-ui-bundle>=0.0.9
+
+# Static analysis for tests
+mypy>=1.5.0
+flake8>=6.0.0
+black>=23.7.0
+
+# Security scanning
+bandit>=1.7.5
+safety>=2.3.0

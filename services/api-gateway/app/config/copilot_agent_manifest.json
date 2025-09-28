@@ -1,0 +1,314 @@
+{
+  "name": "Screenshot to Code Assistant",
+  "description": "AI-powered assistant that converts UI screenshots into clean, production-ready code",
+  "version": "1.0.0",
+  "publisher": "Screenshot-to-Code Team",
+  "icon": {
+    "outline": "https://your-domain.com/assets/icon-outline.png",
+    "color": "https://your-domain.com/assets/icon-color.png"
+  },
+  "accentColor": "#4F46E5",
+  "categories": ["Productivity", "Developer Tools", "AI"],
+  "languages": ["en", "vi", "fr", "de", "ja", "zh"],
+  "capabilities": {
+    "messageHandling": {
+      "supportsFiles": true,
+      "supportedFileTypes": ["image/png", "image/jpeg", "image/gif", "image/webp"],
+      "maxFileSize": "20MB"
+    },
+    "conversationHandling": {
+      "supportsMultiTurn": true,
+      "supportsContext": true,
+      "sessionTimeout": "30m"
+    },
+    "userInterface": {
+      "supportsAdaptiveCards": true,
+      "supportsRichText": true,
+      "supportsActions": true
+    }
+  },
+  "endpoints": {
+    "webhook": {
+      "url": "https://your-api-gateway.com/api/v1/copilot-studio/webhook",
+      "method": "POST",
+      "authentication": {
+        "type": "signature",
+        "signatureHeader": "X-Hub-Signature-256",
+        "algorithm": "sha256"
+      },
+      "timeout": "30s",
+      "retryPolicy": {
+        "maxRetries": 3,
+        "backoffStrategy": "exponential"
+      }
+    },
+    "health": {
+      "url": "https://your-api-gateway.com/api/v1/copilot-studio/webhook/health",
+      "method": "GET",
+      "interval": "5m"
+    }
+  },
+  "permissions": {
+    "required": [
+      "User.Read",
+      "Files.ReadWrite",
+      "Chat.ReadWrite"
+    ],
+    "optional": [
+      "OneDrive.ReadWrite",
+      "Sites.ReadWrite.All"
+    ]
+  },
+  "configuration": {
+    "settings": {
+      "defaultFramework": {
+        "type": "choice",
+        "choices": ["react", "html", "vue", "angular", "svelte"],
+        "default": "react",
+        "displayName": "Default Framework",
+        "description": "The default framework to use for code generation"
+      },
+      "includeResponsiveDesign": {
+        "type": "boolean",
+        "default": true,
+        "displayName": "Include Responsive Design",
+        "description": "Generate responsive CSS by default"
+      },
+      "includeAccessibility": {
+        "type": "boolean", 
+        "default": true,
+        "displayName": "Include Accessibility Features",
+        "description": "Add accessibility attributes and ARIA labels"
+      },
+      "codeStyle": {
+        "type": "choice",
+        "choices": ["modern", "minimal", "verbose"],
+        "default": "modern",
+        "displayName": "Code Style",
+        "description": "The style of generated code"
+      },
+      "saveToOneDrive": {
+        "type": "boolean",
+        "default": false,
+        "displayName": "Auto-save to OneDrive",
+        "description": "Automatically save generated code to OneDrive"
+      }
+    }
+  },
+  "commands": [
+    {
+      "id": "uploadScreenshot",
+      "title": "Upload Screenshot",
+      "description": "Upload a screenshot to convert to code",
+      "type": "action",
+      "context": ["message", "compose"]
+    },
+    {
+      "id": "generateReact",
+      "title": "Generate React Component",
+      "description": "Convert screenshot to React component",
+      "type": "action",
+      "context": ["message"]
+    },
+    {
+      "id": "generateHTML",
+      "title": "Generate HTML/CSS",
+      "description": "Convert screenshot to HTML and CSS",
+      "type": "action", 
+      "context": ["message"]
+    },
+    {
+      "id": "generateVue",
+      "title": "Generate Vue.js Component",
+      "description": "Convert screenshot to Vue.js component",
+      "type": "action",
+      "context": ["message"]
+    },
+    {
+      "id": "help",
+      "title": "Help",
+      "description": "Show help and usage instructions",
+      "type": "query",
+      "context": ["message", "compose"]
+    }
+  ],
+  "conversationStarters": [
+    {
+      "title": "Convert Screenshot",
+      "text": "I'd like to convert a screenshot to code",
+      "icon": "📸"
+    },
+    {
+      "title": "Generate React Component", 
+      "text": "Generate a React component from my screenshot",
+      "icon": "⚛️"
+    },
+    {
+      "title": "Create HTML/CSS",
+      "text": "Convert my design to HTML and CSS",
+      "icon": "🌐"
+    },
+    {
+      "title": "Help & Examples",
+      "text": "Show me what you can do",
+      "icon": "❓"
+    }
+  ],
+  "supportedPlatforms": [
+    "Microsoft Teams",
+    "Microsoft Copilot",
+    "Web Chat",
+    "Mobile"
+  ],
+  "privacy": {
+    "privacyStatementUrl": "https://your-domain.com/privacy",
+    "termsOfServiceUrl": "https://your-domain.com/terms",
+    "dataRetention": "30 days",
+    "dataProcessing": {
+      "storesUserData": false,
+      "storesConversationHistory": false,
+      "processesImages": true,
+      "generatesCode": true
+    }
+  },
+  "support": {
+    "contactUrl": "https://your-domain.com/support",
+    "documentationUrl": "https://your-domain.com/docs",
+    "feedbackUrl": "https://your-domain.com/feedback"
+  },
+  "sample_conversations": [
+    {
+      "title": "Basic Screenshot Conversion",
+      "description": "Convert a simple button screenshot to React code",
+      "messages": [
+        {
+          "role": "user",
+          "content": "I have a screenshot of a button I'd like to convert to React",
+          "attachments": [
+            {
+              "type": "image",
+              "url": "https://example.com/button-screenshot.png"
+            }
+          ]
+        },
+        {
+          "role": "assistant", 
+          "content": "I can see your button screenshot! Please choose which framework you'd like me to use:",
+          "adaptiveCard": {
+            "type": "AdaptiveCard",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "🎨 Screenshot Received!",
+                "weight": "Bolder"
+              }
+            ],
+            "actions": [
+              {
+                "type": "Action.Submit",
+                "title": "⚛️ React",
+                "data": {"action": "generateCode", "framework": "react"}
+              }
+            ]
+          }
+        },
+        {
+          "role": "user",
+          "action": "generateCode",
+          "data": {"framework": "react"}
+        },
+        {
+          "role": "assistant",
+          "content": "✅ REACT Code Generated!",
+          "adaptiveCard": {
+            "type": "AdaptiveCard",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "✅ REACT Code Generated!",
+                "weight": "Bolder",
+                "color": "Good"
+              },
+              {
+                "type": "TextBlock", 
+                "text": "```jsx\nimport React from 'react';\n\nconst Button = () => {\n  return (\n    <button className=\"bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded\">\n      Click Me\n    </button>\n  );\n};\n\nexport default Button;\n```",
+                "fontType": "Monospace",
+                "wrap": true
+              }
+            ],
+            "actions": [
+              {
+                "type": "Action.Submit",
+                "title": "🔄 Regenerate",
+                "data": {"action": "regenerateCode"}
+              },
+              {
+                "type": "Action.Submit",
+                "title": "💾 Save to OneDrive", 
+                "data": {"action": "downloadCode"}
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Complex Layout Conversion",
+      "description": "Convert a complete webpage layout to HTML/CSS",
+      "messages": [
+        {
+          "role": "user",
+          "content": "I have a screenshot of a complete webpage layout. Can you convert it to HTML and CSS?",
+          "attachments": [
+            {
+              "type": "image", 
+              "url": "https://example.com/webpage-screenshot.png"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": "Perfect! That's a nice layout. I'll generate clean HTML and CSS code for you.",
+          "adaptiveCard": {
+            "type": "AdaptiveCard",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "✅ HTML/CSS Code Generated!",
+                "weight": "Bolder",
+                "color": "Good"
+              },
+              {
+                "type": "TextBlock",
+                "text": "📄 **index.html**\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Generated Layout</title>\n  <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n  <div class=\"container\">...</div>\n</body>\n</html>\n```",
+                "fontType": "Monospace",
+                "wrap": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "analytics": {
+    "trackingEnabled": true,
+    "events": [
+      "screenshot_uploaded",
+      "code_generated", 
+      "code_downloaded",
+      "error_occurred",
+      "user_feedback"
+    ]
+  },
+  "features": {
+    "experimental": {
+      "aiEnhancedCodeGeneration": true,
+      "multiLanguageSupport": true,
+      "advancedLayoutDetection": true
+    },
+    "beta": {
+      "voiceCommands": false,
+      "batchProcessing": false
+    }
+  }
+}
