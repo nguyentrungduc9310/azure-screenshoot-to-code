@@ -47,14 +47,41 @@ jobs:
 
       - name: Create deployment package
         run: |
+          echo "📦 Creating full-stack deployment package..."
+
+          # Create deployment structure
           mkdir -p deployment-package
+
+          # Copy backend files (all Python files to root for Azure)
+          echo "📂 Copying backend files..."
           cp -r backend/* deployment-package/
-          mkdir -p deployment-package/frontend
-          cp -r frontend/dist deployment-package/frontend/
-          cp startup.sh deployment-package/
-          cp startup.py deployment-package/
-          cp web.config deployment-package/ || echo "web.config not found, skipping"
-          echo "✅ Deployment package created!"
+
+          # Copy frontend build
+          echo "📂 Copying frontend build..."
+          if [ -d "frontend/dist" ]; then
+            mkdir -p deployment-package/frontend
+            cp -r frontend/dist deployment-package/frontend/
+            echo "✅ Frontend build copied"
+          else
+            echo "⚠️ Frontend dist not found, skipping"
+          fi
+
+          # Copy deployment scripts
+          echo "📂 Copying deployment scripts..."
+          cp startup.sh deployment-package/ || echo "startup.sh not found"
+          cp startup.py deployment-package/ || echo "startup.py not found"
+          cp web.config deployment-package/ || echo "web.config not found"
+
+          # Copy requirements.txt to root (Azure expects it there)
+          cp backend/requirements.txt deployment-package/requirements.txt
+
+          # Verify structure
+          echo "📊 Deployment package structure:"
+          ls -la deployment-package/
+          echo "📊 Frontend structure (if exists):"
+          ls -la deployment-package/frontend/ || echo "No frontend directory"
+
+          echo "✅ Full-stack deployment package created!"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -86,4 +113,4 @@ jobs:
         with:
           app-name: 'SC-TO-CODE-BACKEND'
           slot-name: 'Production'
-          startup-command: 'bash startup.sh'
+          startup-command: 'pip install -r requirements.txt && python -m uvicorn main:app --host 0.0.0.0 --port 8000'

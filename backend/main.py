@@ -43,7 +43,12 @@ app.include_router(home.router, prefix="/api")
 app.include_router(evals.router, prefix="/api")
 
 # Serve frontend static files (if available)
-frontend_dist_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+# In Azure deployment, frontend/dist is at same level as main.py
+frontend_dist_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+if not os.path.exists(frontend_dist_path):
+    # Fallback to local development path
+    frontend_dist_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+
 if os.path.exists(frontend_dist_path):
     # Mount static files
     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist_path, "assets")), name="assets")
