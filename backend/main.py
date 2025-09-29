@@ -53,6 +53,11 @@ if os.path.exists(frontend_dist_path):
     # Mount static files
     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist_path, "assets")), name="assets")
 
+    # Mount locales for i18n
+    locales_path = os.path.join(os.path.dirname(frontend_dist_path), "locales")
+    if os.path.exists(locales_path):
+        app.mount("/locales", StaticFiles(directory=locales_path), name="locales")
+
     # Serve index.html for all non-API routes (SPA routing)
     from fastapi.responses import FileResponse
 

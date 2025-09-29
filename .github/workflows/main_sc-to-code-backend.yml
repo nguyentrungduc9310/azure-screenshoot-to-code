@@ -66,6 +66,16 @@ jobs:
             echo "⚠️ Frontend dist not found, skipping"
           fi
 
+          # Copy locales for i18n
+          echo "📂 Copying locales..."
+          if [ -d "frontend/public/locales" ]; then
+            mkdir -p deployment-package/frontend
+            cp -r frontend/public/locales deployment-package/frontend/
+            echo "✅ Locales copied"
+          else
+            echo "⚠️ Locales not found, skipping"
+          fi
+
           # Copy deployment scripts
           echo "📂 Copying deployment scripts..."
           cp startup.sh deployment-package/ || echo "startup.sh not found"
